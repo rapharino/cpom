@@ -1,1 +1,3 @@
-# cpom
+-advertise-wan=101.xxx.80.xxx 
+-data-dir /usr/local/consul/data/ -config-dir /usr/local/consul/config/ -node=own-server03 -dc=xxxx-own
+-data-dir /usr/local/consul/data/ -config-dir /usr/local/consul/config/ -node=own-server02 -bind=10.10.10.105 -dc=xxx-own

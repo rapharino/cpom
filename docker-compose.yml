@@ -1,0 +1,102 @@
+version: "3"
+services:
+  mysql1:
+    image: mysql:5.7
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+  mysql2:
+    image: mysql:5.7
+    ports:
+      - 23306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+  mysql3:
+    image: mysql:5.7
+    ports:
+      - 33306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+  proxysql1:
+    image: proxysql/proxysql:latest
+    ports:
+      - 16033:6033
+      - 16032:6032
+    volumes:
+      - ./proxysql/proxysql1/proxysql.cnf:/etc/proxysql.cnf
+  proxysql2:
+    image: proxysql/proxysql:latest
+    ports:
+      - 26033:6033
+      - 26032:6032
+    volumes:
+      - ./proxysql/proxysql2/proxysql.cnf:/etc/proxysql.cnf
+  orchestrator:
+    build: ./orchestrator/
+    ports:
+      - 3000:3000
+  consul-dc1-server1:
+    image: consul:latest
+    ports:
+      - 18500:8500
+      - 18600:8600
+    command:  "agent -server -ui -bootstrap-expect=3 -datacenter=dc1 -bind=0.0.0.0 -client=0.0.0.0"
+  consul-dc1-server2:
+    image: consul:latest
+    ports:
+      - 28500:8500
+      - 28600:8600
+    command:  "agent -server -join=consul-dc1-server1 -datacenter=dc1 -bind=0.0.0.0 -client=0.0.0.0"
+    depends_on:
+      - consul-dc1-server1
+  consul-dc1-server3:
+    image: consul:latest
+    ports:
+      - 38500:8500
+      - 38600:8600
+    command:  "agent -server -join=consul-dc1-server1 -datacenter=dc1 -bind=0.0.0.0 -client=0.0.0.0"
+    depends_on:
+      - consul-dc1-server1
+  consul-dc2-server1:
+    image: consul:latest
+    ports:
+      - 18501:8500
+      - 18601:8600
+    command:  "agent -server -ui -bootstrap-expect=3 -datacenter=dc2 -bind=0.0.0.0 -client=0.0.0.0"
+  consul-dc2-server2:
+    image: consul:latest
+    ports:
+      - 28501:8500
+      - 26001:8600
+    command:  "agent -server -join=consul-dc2-server1 -datacenter=dc2 -bind=0.0.0.0 -client=0.0.0.0"
+    depends_on:
+      - consul-dc2-server1
+  consul-dc2-server3:
+    image: consul:latest
+    ports:
+      - 38501:8500
+      - 38601:8600
+    command:  "agent -server -join=consul-dc2-server1 -datacenter=dc2 -bind=0.0.0.0 -client=0.0.0.0"
+    depends_on:
+      - consul-dc2-server1
+  consul-dc1-node1:
+    image: consul:latest
+    ports:
+      - 18503:8500
+      - 18603:8600
+    volumes:
+      - ./consul/consul-mysql1:/etc/consul.d
+    command:  "agent -join=consul-dc1-server1:8301  -datacenter=dc1 -config-dir=/etc/consul.d"
+    depends_on:
+      - consul-dc1-server1
+  consul-dc2-node1:
+    image: consul:latest
+    ports:
+      - 18504:8500
+      - 18604:8600
+    volumes:
+      - ./consul/consul-mysql2:/etc/consul.d
+    command:  "agent -join=consul-dc2-server1:8301 -datacenter=dc2 -config-dir=/etc/consul.d"
+    depends_on:
+      - consul-dc2-server1

@@ -1,0 +1,1 @@
+#docker exec -it consul-proxysql-orchestrator-mysql_consul-dc1-client1_1 consul agent -join=consul-dc1-server1:8301

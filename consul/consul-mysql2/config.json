@@ -1,0 +1,17 @@
+{
+  "services": [
+    {
+      "name": "proxysql",
+      "address": "proxysql2",
+      "port": 6033,
+      "checks": [
+        {
+          "name": "tcp",
+          "tcp": "proxysql2:6033",
+          "interval": "10s",
+          "timeout": "1s"
+        }
+      ]
+    }
+  ]
+}

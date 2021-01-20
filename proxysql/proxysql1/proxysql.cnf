@@ -1,0 +1,38 @@
+admin_variables=
+{
+		# proxy admin credentials
+        admin_credentials="admin:admin;cluster:cluster"
+        # proxy admin credentials
+        mysql_ifaces="0.0.0.0:6032"
+        # proxy cluster 用户名/密码
+        cluster_username="cluster"
+        cluster_password="cluster"
+        cluster_check_interval_ms=1000
+        cluster_check_status_frequency=10
+        # proxy cluster 配置持久化
+        cluster_mysql_query_rules_save_to_disk=true
+        cluster_mysql_servers_save_to_disk=true
+        cluster_mysql_users_save_to_disk=true
+        cluster_proxysql_servers_save_to_disk=true
+        # proxy cluster 检验3次不一致性后同步
+        cluster_mysql_query_rules_diffs_before_sync=3
+        cluster_mysql_servers_diffs_before_sync=3
+        cluster_mysql_users_diffs_before_sync=3
+        cluster_proxysql_servers_diffs_before_sync=3
+}
+# proxy servers nodes
+proxysql_servers =
+(
+        {
+                hostname="proxysql1"
+                port=6032
+                weight=1
+                comment="ProxySQL-1"
+        },
+        {
+                hostname="proxysql2"
+                port=6032
+                weight=1
+                comment="ProxySQL-2"
+        }
+)
